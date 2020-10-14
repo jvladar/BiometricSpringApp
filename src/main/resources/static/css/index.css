@@ -1,0 +1,171 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+body {
+    background-image: url("../white-hexagon-pattern-with-blue-lights-vector.jpg");
+    background-size: cover;
+}
+table{
+    text-align: center;
+    height: 320px;
+    width: 1000px;
+    background-color: #ebe9e0;
+    margin-top: 25px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid #000000;
+    border-spacing: 1px;
+}
+table td, tr
+{
+    width: 80px;
+    border: 1px solid burlywood;
+    border-spacing: 1px;
+    padding: 1px;
+}
+.cellPrednaska{
+    background-color: greenyellow;
+}
+.cellCvicenie{
+    background-color: rgb(119, 228, 119);
+}
+.cellTelesna{
+    background-color: aquamarine;
+}
+.legenda{
+    font-family: cursive ;
+}
+h1{
+    margin: 10px 30px;
+}
+h2{
+    text-align: center;
+}
+.menu {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #111;
+}
+
+.zoznam {
+    margin-top: 5px;
+    margin-left: 35%;
+    margin-right: 5%;
+}
+
+.titlemenu {
+    display: block;
+    color: white;
+    font-size: large;
+    text-align: center;
+    padding: 30px 30px;
+    text-decoration: none;
+}
+
+li a:hover {
+    background-color:  #333;
+}
+
+#page-container {
+    position: relative;
+    min-height: 100vh;
+}
+footer {
+    position: absolute;
+    font-size: small;
+    bottom: 0;
+    width: 100%;
+    color: white;
+    background-color:  #333;
+    text-align: center;
+}
+#content{
+    display:flex;
+    margin-left: auto;
+    margin-right: auto;
+    width:75%;
+}
+
+article.stredny{
+    background-color: white;
+    min-height: 400px;
+    box-shadow:5px 5px 5px rgba(0, 0, 0, 0.700);
+    padding: 5px 5px 5px 5px;
+    margin: 30px 10px;
+    border-top-right-radius: 10px 10px;
+    border-bottom-right-radius: 10px 10px;
+    border-bottom-left-radius: 10px 10px;
+    border-top-left-radius: 10px 10px;
+    flex:1;
+}
+.list{
+    list-style-type:square;
+    margin: 10px 50px 50px 50px;
+    box-shadow:5px 5px 5px rgba(0, 0, 0, 0.400);
+    background-color: rgb(216, 200, 154);
+}
+.citat{
+    background-color: rgb(216, 200, 154);
+    float: right;
+    box-shadow:5px 5px 5px rgba(0, 0, 0, 0.400);
+    margin-right: 20px;
+    margin-top: 45px;
+    font-size: large;
+    font-style: italic;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    text-align: center;
+    border-top-right-radius: 10px 10px;
+    border-bottom-right-radius: 10px 10px;
+    border-bottom-left-radius: 10px 10px;
+    border-top-left-radius: 10px 10px;
+    max-width:40%;
+    max-height:40%;
+}
+
+.nadpis{
+    font-family: "Lucida Console", Courier, monospace;
+    font-size: x-large;
+    text-align: center;
+    margin: 10px 100px
+}
+.nadpis:hover{
+    color: sienna;
+}
+.btn {
+    font-family: "Lucida Console", Courier, monospace;
+    background-color:  burlywood;
+    color: black;
+    padding: 3px 32px;
+    text-align: center;
+    font-size: large;
+    margin: 5px 120px;
+    opacity: 0.7;
+    transition: 0.3s;
+    border-top-right-radius: 20px 20px;
+    border-bottom-right-radius: 20px 20px;
+    border-bottom-left-radius: 20px 20px;
+    border-top-left-radius: 20px 20px;
+}
+
+.btn:hover {opacity: 1}
+
+.meno{
+    font-family: "Lucida Console", Courier, monospace;
+}
+
+.kategorie {
+    font-family: "Lucida Console", Courier, monospace;
+    background-color: lightgoldenrodyellow;
+    color: black;
+    padding: 3px 32px;
+    text-align: center;
+    font-size: large;
+    margin: 5px 20px;
+    border-top-right-radius: 20px 20px;
+    border-bottom-right-radius: 20px 20px;
+    border-bottom-left-radius: 20px 20px;
+    border-top-left-radius: 20px 20px;
+}
