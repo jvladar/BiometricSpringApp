@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+  <link rel="stylesheet" href="/static/css/index.css" />
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
+  <script src="/static/js/vanta.net.min.js"></script>
+  <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+  <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+
+  <title>Biometric app</title>
+</head>
+<body>
+<div id="model">
+<div id="page-container">
+  <nav>
+    <ul class="menu">
+      <li style="float: left;"><a href="/"> <img src="../STU-ncnv.png" style="height:85px;"></a></li>
+    </ul>
+  </nav>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-1"></div>
+      <article class="stredny col-lg-10">
+
+        <form id="searchForm">
+
+          <div class="form-group row" style="margin-left: 10px">
+            <label for="id" class="col-sm-2 col-form-label">ID: </label>
+            <div class="col-sm-7">
+              <select name="id" class="form-control" id="id">
+                <option th:each="id: ${ids}" th:value="${id}" th:text="${id}"></option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row" style="margin-left: 10px">
+            <label for="docName" class="col-sm-2 col-form-label">Document name: </label>
+            <div class="col-sm-7">
+              <input type="text" class="form-control" id="docName"
+                   placeholder="Enter document name" name="docName">
+            </div>
+          </div>
+
+          <div class="form-group row" style=" margin-left: 10px">
+            <label for="docType" class="col-sm-2 col-form-label">Document type: </label>
+            <div class="col-sm-7">
+              <select name="docType" class="form-control" id="docType">
+                <option th:each="type: ${types}" th:value="${type}" th:text="${type}"></option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group row" style="margin-left: 10px">
+            <label for="size" class="col-sm-2 col-form-label">Document size: </label>
+            <div class="col-sm-7">
+              <input type="number" class="form-control" id="size" name="size">
+            </div>
+          </div>
+
+          <div class="form-group row" style="margin-left: 10px">
+            <div class="col-sm-5">
+              <button type="submit" class=" form-control btn" >Search</button>
+            </div>
+          </div>
+
+            <div id="getResult" style="padding: 20px 10px 20px 50px">
+              <ul class="list-group"></ul>
+            </div>
+        </form>
+
+        <form id="vyber">
+
+
+        </form>
+          <h3 style="margin-left: 25px;">Upload fotiek</h3>
+            <form style="margin-left: 7%" id="uploadFiles" name="uploadFiles" method="post" th:action=@{/uploadFiles} encType="multipart/form-data">
+
+              <div class="form-group">
+                <label>Druh požiadavky: </label>
+                <input type="radio" name="radiobut" value="verification" > Verifikacia
+                <input type="radio" name="radiobut" value="identification" > Identifikacia
+              </div>
+
+              <div class="form-group row">
+                  <input class="col-sm-5" type="file" name="files" multiple required />
+                  <div class="col-sm-2">
+                    <button class="form-control btn-secondary" id="subor" type="submit">Odošli</button>
+                  </div>
+              </div>
+            </form>
+
+        <form style="margin-left: 7%" id="scan" name="uploadFiles" method="post" th:action=@{/scan}>
+          <div class="form-group row">
+            <div class="col-sm-2">
+              <button class="form-control btn-secondary" id="scaner" type="submit">Scan</button>
+            </div>
+          </div>
+        </form>
+
+          <div class="form-group row">
+            <div class="col-sm-5">
+              <button style="margin-left: 10px;" id="getALlDatas" type="button" class="form-control btn">Get All Files</button>
+            </div>
+          </div>
+
+              <div id="getResultDiv" style="padding: 20px 10px 20px 50px">
+                <ul style="font-size: small" class="list-group row"></ul>
+              </div>
+
+      </article>
+      <div class="col-lg-1"></div>
+    </div>
+  </div>
+
+  <footer>
+    Author: Ján Vladár, STU FEI
+  </footer>
+</div>
+</div>
+</div>
+<script src="/static/js/searchrequest.js"></script>
+<script src="/static/js/getrequest.js"></script>
+<script src="/static/js/animation.js"></script>
+</body>
+
+</html>

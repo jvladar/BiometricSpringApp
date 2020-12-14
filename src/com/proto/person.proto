@@ -1,0 +1,9 @@
+syntax = "proto3";
+message Person{
+  string firstname = 1;
+  string lastname = 2;
+  int32 age = 3;
+  bytes image = 4;
+  int32 img_width = 5;
+  int32 img_height = 6;
+}
