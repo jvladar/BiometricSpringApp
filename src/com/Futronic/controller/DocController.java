@@ -111,12 +111,15 @@ public class DocController {
 			ByteString bs = ByteString.copyFrom(data);
 			PersonOuterClass.Person person = PersonOuterClass.Person.newBuilder().setFirstname("Jan").setLastname("Vladar")
 					.setAge(22).setImage(bs).setImgHeight(480).setImgWidth(320).build();
+			System.out.println(person.toByteArray().length);
 			person.writeTo(clientSocket.getOutputStream());
 
 			InputStream is = clientSocket.getInputStream();
+			System.out.println("vypis");
 			DataInputStream ds = new DataInputStream(is);
 			int buffSize = ds.readInt();
 			byte[] buffer = new byte[buffSize];
+			System.out.println(buffSize);
 			ds.readFully(buffer);
 
 			System.out.println(buffer.length);
@@ -133,6 +136,7 @@ public class DocController {
 
 			byte[] encodeBase64 = Base64.getEncoder().encode(bytes);
 			String s = new String(encodeBase64, "UTF-8");
+
 			model.addAttribute("fotka",s);
 			scanner.CloseDevice();
 		}
