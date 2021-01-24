@@ -57,7 +57,6 @@ public class DocStorageService {
 	  }
 	  return ids;
   }
-
 	public Set<String> getTypes() {
 		Set<String> types = new HashSet<>();
 		List<Doc> files = docRepository.findAll();
