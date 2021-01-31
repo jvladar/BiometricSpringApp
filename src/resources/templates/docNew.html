@@ -99,7 +99,21 @@
                 <form style="margin-left: 7%" id="scan" name="uploadFiles" method="post" th:action=@{/scan}>
                     <div class="form-group row">
                         <div class="col-sm-2">
-                            <button class="form-control btn-secondary" id="scaner" type="submit">Scan</button>
+                            <div class="content">
+                                <div class="inner">
+                                    <div class="submit-buttons">
+                                        <div class="buttonsBlock">
+                                            <div class="submit-buttons__content">
+                                                <button class="submit-button submit-button--1" type="submit" id="scaner"  title="Submit">
+                                                    <span class="submit-button__pending submit-button__pending--1"></span>
+                                                    <span class="submit-button__text submit-button__text--1">Submit</span>
+                                                    <span class="submit-button__loaded submit-button__loaded--1"> <span>Success!</span></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -130,6 +144,7 @@
 <script src="/static/js/searchrequest.js"></script>
 <script src="/static/js/getrequest.js"></script>
 <script src="/static/js/animation.js"></script>
+<script src="/static/js/send.js"></script>
 </body>
 
 </html>
