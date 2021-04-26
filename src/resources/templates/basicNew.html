@@ -29,39 +29,73 @@
         <div class="container">
             <div class="row">
                 <article class="col-md-7 lavy">
-                    <h3 style="margin-left: 25px;">Upload odtlačkov</h3>
-                    <form style="margin-left: 3%" id="uploadFiles" name="uploadFiles" method="post" th:action=@{/uploadFiles} encType="multipart/form-data">
-                        <div class="form-group">
-                            <label>Druh požiadavky: </label>
-                            <input type="radio" name="radiobut" value="verification" > Verifikácia
-                            <input type="radio" name="radiobut" value="identification" > Identifikácia
-                        </div>
 
-                        <div class="form-group row">
-                            <input class="col-sm-8" type="file" name="files" multiple required />
-                            <div class="col-sm-3">
-                                <div class="content">
-                                    <div class="inner">
-                                        <div class="submit-buttons">
-                                            <div class="buttonsBlock">
-                                                <div class="submit-buttons__content">
-                                                    <button class="submit-button submit-button--1" type="submit" id="subor"  title="Submit">
-                                                        <span class="submit-button__pending submit-button__pending--1"></span>
-                                                        <span class="submit-button__text submit-button__text--1">Odošli</span>
-                                                        <span class="submit-button__loaded submit-button__loaded--1"> <span>Odoslané!</span></span>
-                                                    </button>
+                    <h3 style="margin: 20px;">Upload odtlačkov
+                        <label class="switch">
+                            <input type="checkbox" name="upload" value="ano" onclick="show();">
+                            <span class="slider round"></span>
+                        </label>
+                    </h3>
+
+                    <div id="div2" class="hide">
+
+                        <form class="md-form" id="uploadFiles" name="uploadFiles" method="post" th:action=@{/uploadFiles} encType="multipart/form-data">
+                            <div class="form-group row" style="margin-left: 12px; margin-right: 20%" >
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text" for="inputGroupSelect01">Požiadavka</label>
+                                    </div>
+                                    <select class="custom-select" id="inputGroupSelect01">
+                                        <option selected>Vyber požiadavku</option>
+                                        <option value="verification">Verifikácia</option>
+                                        <option value="identification">Identifikácia</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row" style="margin-left: 12px; margin-right: 20%" >
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Výber súboru</span>
+                                    </div>
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="inputGroupFile01">
+                                        <label class="custom-file-label" for="inputGroupFile01">...</label>
+                                    </div>
+                                </div>
+                                <div style="margin-left: 30%" class="col-sm-3">
+                                    <div class="content">
+                                        <div class="inner">
+                                            <div class="submit-buttons">
+                                                <div class="buttonsBlock">
+                                                    <div class="submit-buttons__content">
+                                                        <button class="submit-button submit-button--1" type="submit" id="subor"  title="Submit">
+                                                            <span class="submit-button__pending submit-button__pending--1"></span>
+                                                            <span class="submit-button__text submit-button__text--1">Odošli</span>
+                                                            <span class="submit-button__loaded submit-button__loaded--1"> <span>Odoslané!</span></span>
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </form>
-                    <h3 style="margin-left: 25px;">Scanovanie odtlačkov</h3>
-                    <form style="margin-left: 3%" id="scan" name="uploadFiles" method="post" th:action=@{/scan}>
-                        <div class="form-group row">
-                            <div class="col-sm-4">
+                        </form>
+                    </div>
+                    <h3 style="margin: 20px;">Scanovanie odtlačkov</h3>
+                    <form id="scan" name="uploadFiles" method="post" th:action=@{/scan}>
+                        <div class="form-group row" style="margin-left: 12px; margin-right: 20%" >
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="inputGroupSelect02">Požiadavka</label>
+                                </div>
+                                <select class="custom-select" id="inputGroupSelect02">
+                                    <option selected>Vyber požiadavku</option>
+                                    <option value="verification">Verifikácia</option>
+                                    <option value="identification">Identifikácia</option>
+                                </select>
+                            </div>
+                            <div style="margin-left: 30%" class="col-sm-3">
 
                                 <div class="content">
                                     <div class="inner">
@@ -70,8 +104,8 @@
                                                 <div class="submit-buttons__content">
                                                     <button class="submit-button submit-button--1" type="submit" id="scaner"  title="Submit">
                                                         <span class="submit-button__pending submit-button__pending--1"></span>
-                                                        <span class="submit-button__text submit-button__text--1">Submit</span>
-                                                        <span class="submit-button__loaded submit-button__loaded--1"> <span>Success!</span></span>
+                                                        <span class="submit-button__text submit-button__text--1">Scan</span>
+                                                        <span class="submit-button__loaded submit-button__loaded--1"> <span>Scan!</span></span>
                                                     </button>
                                                 </div>
                                             </div>
@@ -89,14 +123,31 @@
                         </div>
                     </div>
 
-                    <div id="getResultDiv" style="padding: 20px 10px 20px 50px">
+                    <div id="getResultDiv" style="padding: 20px 10px 20px 10px">
                         <ul style="font-size: small" class="list-group row"></ul>
+                    </div>
+
+                    <h3 style="margin: 20px;">Zobrazenie odtlačku</h3>
+                    <div class="form-group row input-group" style="margin-left: 12px; margin-right: 20%">
+                        <select id="odtlacok" class="custom-select">
+                            <option value="first">Prvý odtlačok</option>
+                            <option value="second">Druhý odtlačok</option>
+                            <option value="third">Tretí odtlačok</option>
+                        </select>
+                        <div class="input-group-append">
+                            <button class="btn-outline-secondary" type="button" onclick="picture()" > Zobraz </button>
+                        </div>
                     </div>
 
                 </article>
 
                 <article class="col-lg-4 pravy">
-                    <td><img th:src="${'data:image/bmp;charset=utf-8;base64,' + fotka}" alt=""></td>
+
+                        <td><img th:src="${'data:image/bmp;charset=utf-8;base64,' + fotka}" alt=""></td>
+
+                    <div id="fotka1" class="hide">
+
+                    </div>
                 </article>
             </div>
         </div>
