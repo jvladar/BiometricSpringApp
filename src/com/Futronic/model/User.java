@@ -18,9 +18,8 @@ public class Users {
 	private String username;
 
 	@OneToMany(cascade = CascadeType.ALL)
-
 	@JoinColumn(name = "user_id",referencedColumnName = "id")
-	List<Fingers> fingers = new ArrayList<>();
+	List<Fingers> namefingers = new ArrayList<>();
 
 	public Users() {}
 
