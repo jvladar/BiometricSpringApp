@@ -58,10 +58,10 @@ public class Scanner {
                 strErrMsg = "Empty Frame";
                 break;
             case FTR_ERROR_MOVABLE_FINGER:
-                strErrMsg = "Moveable Finger";
+                strErrMsg = "Moveable Fingerprint";
                 break;
             case FTR_ERROR_NO_FRAME:
-                strErrMsg = "Fake Finger";
+                strErrMsg = "Fake Fingerprint";
                 break;
             case FTR_ERROR_HARDWARE_INCOMPATIBLE:
                 strErrMsg = "Hardware Incompatible";

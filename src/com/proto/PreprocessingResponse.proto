@@ -1,0 +1,7 @@
+syntax = "proto3";
+import "Fingerprint.proto";
+
+// message specifying preprocessing OpenFinger response
+message PreprocessingResponse {
+	repeated Fingerprint results = 1; // array of preprocessing results (images after individual processing stages)
+}

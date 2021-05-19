@@ -6,7 +6,7 @@ import java.util.List;
 
 @Entity
 @Table(name="users")
-public class Users {
+public class User {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
@@ -19,11 +19,11 @@ public class Users {
 
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id",referencedColumnName = "id")
-	List<Fingers> namefingers = new ArrayList<>();
+	List<Fingerprint> fingerprints = new ArrayList<>();
 
-	public Users() {}
+	public User() {}
 
-	public Users( String name, String username) {
+	public User(String name, String username) {
 		super();
 		this.name = name;
 		this.username = username;
@@ -49,15 +49,11 @@ public class Users {
 		return id;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public List<Fingerprint> getFingers() {
+		return fingerprints;
 	}
 
-	public List<Fingers> getFingers() {
-		return fingers;
-	}
-
-	public void setFingers(List<Fingers> fingers) {
-		this.fingers = fingers;
+	public void setFingers(List<Fingerprint> fingerprints) {
+		this.fingerprints = fingerprints;
 	}
 }

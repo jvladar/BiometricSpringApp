@@ -4,11 +4,12 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.*;
-
-import Futronic.model.Fingers;
-import Futronic.model.Users;
-import Futronic.repository.FingersRepository;
-import Futronic.repository.UsersRepository;
+import Futronic.model.Fingerprint;
+import Futronic.model.Level2;
+import Futronic.model.User;
+import Futronic.openFinger.Level2OuterClass;
+import Futronic.repository.FingerRepository;
+import Futronic.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,37 +17,35 @@ import org.springframework.stereotype.Service;
 public class UsersStorageService {
 
   	@Autowired
-  	private UsersRepository usersRepository;
+  	private UserRepository userRepository;
 
 	@Autowired
-	private FingersRepository fingersRepository;
+	private FingerRepository fingerRepository;
 
 
-  public void sending(Users users){
+  public void sending(User user){
 	  try{
 		  Socket clientSocket = new Socket("147.175.106.8",55555);
 
 		  OutputStream outputStream = clientSocket.getOutputStream();
 		  ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-		  objectOutputStream.writeObject(users);
+		  objectOutputStream.writeObject(user);
 	  }
 	  catch(Exception e){
 		  e.printStackTrace();
 	  }
   }
 
-	public Users saveUser(String name, String username, byte[] data) {
+	public User saveUser(String name, String username, byte[] data, List<Level2OuterClass.Level2> lvls) {
   		if(findUserByUsername(username)!=null){
-  			Users user1 = findUserByUsername(username);
-			Fingers finger1 = new Fingers(data);
-  			user1.getFingers().add(finger1);
-  			return this.usersRepository.save(user1);
+  			User user1 = findUserByUsername(username);
+			user1 = savingProcess(user1, data,lvls);
+  			return this.userRepository.save(user1);
 		}
   		try{
-			Fingers finger = new Fingers(data);
-			Users user = new Users(name, username);
-			user.getFingers().add(finger);
-			return this.usersRepository.save(user);
+			User user = new User(name, username);
+			user = savingProcess(user, data,lvls);
+			return this.userRepository.save(user);
 	  	}
 	  	catch(Exception e) {
 		  e.printStackTrace();
@@ -54,14 +53,33 @@ public class UsersStorageService {
 	  return null;
   	}
 
-	public Users saveFinger(byte[] data, String username) {
+  	public User savingProcess(User user, byte[] data, List<Level2OuterClass.Level2> lvls){
+		Fingerprint fingerprint = new Fingerprint(data);
+		for(Level2OuterClass.Level2 i: lvls){
+			Level2 level2 = new Level2();
+			level2.setX(i.getX());
+			level2.setY(i.getY());
+			level2.setType(i.getType());
+			level2.setAngle(i.getAngle());
+			level2.setQuality(i.getQuality());
+			level2.setImg_height(i.getImgHeight());
+			level2.setImg_width(i.getImgWidth());
+
+			fingerprint.getLevels().add(level2);
+		}
+		user.getFingers().add(fingerprint);
+		return user;
+	}
+
+
+	public User saveFinger(byte[] data, String username) {
 		try{
-			Fingers finger = new Fingers(data);
-			List<Users> users = getUsers();
-			for(Users user : users){
+			Fingerprint fingerprint = new Fingerprint(data);
+			List<User> users = getUsers();
+			for(User user : users){
 				if(user.getUsername().equals(username)){
-					user.getFingers().add(finger);
-					return usersRepository.save(user);
+					user.getFingers().add(fingerprint);
+					return userRepository.save(user);
 				}
 			}
 		}
@@ -71,10 +89,10 @@ public class UsersStorageService {
 		return null;
 	}
 
-	public Users findUserByUsername(String username) {
+	public User findUserByUsername(String username) {
 		try{
-			List<Users> users = getUsers();
-			for(Users user : users){
+			List<User> users = getUsers();
+			for(User user : users){
 				if(user.getUsername().equals(username)){
 					return user;
 				}
@@ -87,9 +105,9 @@ public class UsersStorageService {
 	}
 
 
-	public List<Fingers> findUserFingers(String username){
-		List<Users> users = getUsers();
-		for(Users user : users){
+	public List<Fingerprint> findUserFingers(String username){
+		List<User> users = getUsers();
+		for(User user : users){
 			if(user.getUsername().equals(username)){
 				return user.getFingers();
 			}
@@ -97,60 +115,31 @@ public class UsersStorageService {
 		return null;
 	}
 
-	public List<Fingers> getFingers(){
-		return fingersRepository.findAll();
+	  public List<Fingerprint> getFingers(){
+		return fingerRepository.findAll();
 	}
 
-  public Optional<Users> getUser(Integer id) {
-	  return usersRepository.findById(id);
-  }
-
-  public List<Users> getUsers() {
-		return usersRepository.findAll();
-	}
-
-
-  public List<Users> getFiles(){
-	  return usersRepository.findAll();
-  }
-
-  public List<Integer> getIds() {
-	  List<Integer> ids = new ArrayList<>();
-	  List<Users> files = usersRepository.findAll();
-	  ids.add(null);
-	  for (Users i : files) {
-		ids.add(i.getId());
+	  public Optional<User> getUser(Integer id) {
+		  return userRepository.findById(id);
 	  }
-	  return ids;
-  }
 
-/*	public Set<String> getTypes() {
-		Set<String> types = new HashSet<>();
-		List<Users> files = usersRepository.findAll();
-		types.add("");
-		for (Users i : files) {
-			types.add(i.getDocType());
+	  public List<User> getUsers() {
+			return userRepository.findAll();
 		}
-		return types;
-	}
 
-	public List<Users> getSearch(Users doc) {
-		List<Users> types = new ArrayList<>();
-		List<Users> files = usersRepository.findAll();
-		for (Users i : files) {
-			//if (doc.getId()<1 || (i.getId()==doc.getId())){
-			if(doc.getId()==null || i.getId()==doc.getId()){
-				if (doc.getDocType().equals("") || i.getDocType().equals(doc.getDocType())) {
-					if(i.getDocName().equals(doc.getDocName()) || doc.getDocName().equals("")) {
-						if(doc.getSize()==null || i.getSize().equals(doc.getSize())) {
-							if(doc.getId()==null && doc.getDocType().equals("") && doc.getDocName().equals("") && doc.getSize()==null){}
-							else types.add(i);
-						}
-					}
-				}
-			}
-		}
-		return types;
-	}*/
+
+	  public List<User> getFiles(){
+		  return userRepository.findAll();
+	  }
+
+	  public List<Integer> getIds() {
+		  List<Integer> ids = new ArrayList<>();
+		  List<User> files = userRepository.findAll();
+		  ids.add(null);
+		  for (User i : files) {
+			ids.add(i.getId());
+		  }
+		  return ids;
+	  }
 
 }

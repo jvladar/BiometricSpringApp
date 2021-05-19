@@ -1,8 +1,8 @@
 package Futronic.repository;
 
-import Futronic.model.Finger;
+import Futronic.model.Fingerprint;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface FingersRepository extends JpaRepository<Finger,Integer> {
+public interface FingerRepository extends JpaRepository<Fingerprint,Integer> {
 
 }

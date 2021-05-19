@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+import "PreprocessingRequest.proto";
+import "PreprocessingResponse.proto";
+import "ExtractionRequest.proto";
+import "ExtractionResponse.proto";
+import "VerificationRequest.proto";
+import "VerificationResponse.proto";
+import "IdentificationRequest.proto";
+import "IdentificationResponse.proto";
+
+message Wrapper {
+	enum Header {
+		PREPROCESSING_REQUEST = 0;
+		PREPROCESSING_RESPONSE = 1;
+		EXTRACTION_REQUEST = 2;
+		EXTRACTION_RESPONSE = 3;
+		VERIFICATION_REQUEST = 4;
+		VERIFICATION_RESPONSE = 5;
+		IDENTIFICATION_REQUEST = 6;
+		IDENTIFICATION_RESPONSE = 7;
+	}
+	Header header = 1;
+	oneof body {
+		PreprocessingRequest preproc_request = 2;
+		PreprocessingResponse preproc_response = 3;
+		ExtractionRequest extract_request = 4;
+		ExtractionResponse extract_response = 5;
+		VerificationRequest verify_request = 6;
+		VerificationResponse verify_response = 7;
+		IdentificationRequest identify_request = 8;
+		IdentificationResponse identify_response = 9;
+	}
+}

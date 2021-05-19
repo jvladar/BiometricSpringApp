@@ -1,0 +1,6 @@
+syntax = "proto3";
+
+import "Fingerprint.proto";
+message ExtractionRequest{
+  Fingerprint fingerprint = 1;
+}

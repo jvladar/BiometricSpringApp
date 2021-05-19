@@ -6,7 +6,7 @@ import java.util.List;
 
 @Entity
 @Table(name="fingers")
-public class Finger {
+public class Fingerprint {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
@@ -17,10 +17,14 @@ public class Finger {
     @JoinColumn(name = "finger_id",referencedColumnName = "id")
     List<Level2> levels = new ArrayList<>();
 
-    public Finger() {
+    public Fingerprint() {
     }
 
-    public Finger(byte[] data) {
+    public Integer getId() {
+        return id;
+    }
+
+    public Fingerprint(byte[] data) {
         this.data = data;
     }
 

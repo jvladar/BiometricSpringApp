@@ -1,0 +1,7 @@
+syntax = "proto3";
+import "Fingerprint.proto";
+
+// message specifying preprocessing OpenFinger request
+message PreprocessingRequest {
+	Fingerprint fingerprint = 1;
+}

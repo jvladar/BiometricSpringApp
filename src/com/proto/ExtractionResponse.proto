@@ -1,0 +1,6 @@
+syntax = "proto3";
+
+import "Level2Vector.proto";
+message ExtractionResponse {
+  Level2Vector level2vector = 1;
+}

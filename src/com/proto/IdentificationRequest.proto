@@ -1,0 +1,13 @@
+syntax = "proto3";
+import "Fingerprint.proto";
+import "Level2Vector.proto";
+
+message Level2VectorOfFingerprint{
+	int32 fingerprint_id = 1;
+	Level2Vector level2vector = 2;
+}
+
+message IdentificationRequest{
+	Fingerprint fingerprint = 1;
+	repeated Level2VectorOfFingerprint vectors = 2; 
+}

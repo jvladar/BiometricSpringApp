@@ -1,6 +1,5 @@
 package Futronic.service;
 
-
 import Futronic.openFinger.WrapperOuterClass;
 import org.springframework.stereotype.Service;
 
@@ -11,8 +10,8 @@ import java.io.InputStream;
 import java.net.Socket;
 
 @Service
-public class ComunicationService {
-    
+public class CommunicationService {
+
     public WrapperOuterClass.Wrapper parser (Socket clientSocket) throws IOException, InterruptedException{
         InputStream is = clientSocket.getInputStream();
         DataInputStream ds = new DataInputStream(is);

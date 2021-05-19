@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+message Level2{
+  int32 x = 1;
+  int32 y = 2;
+  int32 type = 3;
+  float angle = 4;
+  int32 quality = 5;
+  int32 img_width = 6;
+  int32 img_height = 7;
+}

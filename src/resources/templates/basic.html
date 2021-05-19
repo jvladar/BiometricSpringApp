@@ -31,77 +31,6 @@
             <div class="row">
                 <article class="col-md-7 lavy">
 
-                    <h3 style="margin: 20px;">Upload odtlačkov
-                        <label class="switch">
-                            <input type="checkbox" name="upload" value="ano" onclick="show();">
-                            <span class="slider round"></span>
-                        </label>
-                    </h3>
-
-                    <div id="div2" class="hide">
-
-                    <form class="md-form" id="uploadFiles" name="uploadFiles" method="post" th:action=@{/uploadFiles} encType="multipart/form-data">
-                        <div class="form-group row" style="margin-left: 12px; margin-right: 20%" >
-                        <div class="form-group row input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <label class="input-group-text" for="inputGroupSelect01">Požiadavka</label>
-                                </div>
-                                <select class="custom-select" id="inputGroupSelect01" name="inputGroupSelect01" onchange="changeFunc1(event);">
-                                    <option selected>Vyber požiadavku</option>
-                                    <option value="verification">Verifikácia</option>
-                                    <option value="identification">Identifikácia</option>
-                                    <option value="registration">Registrácia</option>
-                                </select>
-                        </div>
-                            <div class="form-group row hide" style="margin-left: 12px; margin-right: 20%" id="register0">
-                                <label for="name"><b>Meno a priezvisko</b></label>
-                                <input type="text" placeholder="Zadaj celé meno" name="name0" id="name0">
-
-                                <label for="username"><b>Prihlasovacie meno</b></label>
-                                <input type="text" placeholder="Zadaj svoj username" name="username0" id="username0">
-                            </div>
-
-                            <div class="form-group row hide" style="margin-left: 12px; margin-right: 20%"  id="register01">
-                                <label for="username"><b>Prihlasovacie meno</b></label>
-                                <input type="text" placeholder="Zadaj svoj username" name="login0" id="login0">
-                            </div>
-                        </div>
-                        <div class="form-group row" style="margin-left: 12px; margin-right: 20%" >
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">Výber súboru</span>
-                                </div>
-                                <div class="custom-file">
-                                    <input type="file" class="custom-file-input" name ="files" id="fileinput" multiple required/>
-                                    <label class="custom-file-label" for="fileinput">...</label>
-                                </div>
-                            </div>
-
-                            <div style="margin-left: 30%" class="col-sm-3">
-                                <div class="content">
-                                    <div class="inner">
-                                        <div class="submit-buttons">
-                                            <div class="buttonsBlock">
-                                                <div class="submit-buttons__content">
-                                                    <button class="submit-button submit-button--1" type="submit" id="subor"  title="Submit">
-                                                        <span class="submit-button__pending submit-button__pending--1"></span>
-                                                        <span class="submit-button__text submit-button__text--1">Odošli</span>
-                                                        <span class="submit-button__loaded submit-button__loaded--1"> <span>Odoslané!</span></span>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                    </div>
-
-
-
-
-
 
                     <h3 style="margin: 20px;">Scanovanie odtlačkov</h3>
                     <form id="scan" name="uploadFiles" method="post" th:action=@{/scan}>
@@ -115,12 +44,13 @@
                                     <option value="registration">Registrácia</option>
                                     <option value="verification">Verifikácia</option>
                                     <option value="identification">Identifikácia</option>
+                                    <option value="preprocessing">Preprocesing odtlačku</option>
                                 </select>
                             </div>
 
                             <div class="form-group row hide" style="margin-left: 12px; margin-right: 20%" id="register">
                                 <label for="name"><b>Meno a priezvisko</b></label>
-                                <input type="text" placeholder="Zadaj celé meno"  name="name" id="name">
+                                <input class= "form-control" type="text" placeholder="Zadaj celé meno"  name="name" id="name">
 
                                 <label for="username"><b>Prihlasovacie meno</b></label>
                                 <input type="text" placeholder="Zadaj svoj username"  name="username" id="username">
@@ -153,9 +83,76 @@
                         </div>
                     </form>
 
+                    <h3 style="margin: 20px;">Upload odtlačkov
+                        <label class="switch">
+                            <input type="checkbox" name="upload" value="ano" onclick="show();">
+                            <span class="slider round"></span>
+                        </label>
+                    </h3>
+                    <div id="div2" class="hide">
+
+                        <form class="md-form" id="uploadFiles" name="uploadFiles" method="post" th:action=@{/uploadFiles} encType="multipart/form-data">
+                            <div class="form-group row" style="margin-left: 12px; margin-right: 20%" >
+                                <div class="form-group row input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text" for="inputGroupSelect01">Požiadavka</label>
+                                    </div>
+                                    <select class="custom-select" id="inputGroupSelect01" name="inputGroupSelect01" onchange="changeFunc1(event);">
+                                        <option selected>Vyber požiadavku</option>
+                                        <option value="verification">Verifikácia</option>
+                                        <option value="identification">Identifikácia</option>
+                                        <option value="registration">Registrácia</option>
+                                        <option value="preprocessing">Preprocesing odtlačku</option>
+                                    </select>
+                                </div>
+                                <div class="form-group row hide" style="margin-left: 12px; margin-right: 20%" id="register0">
+                                    <label for="name"><b>Meno a priezvisko</b></label>
+                                    <input type="text" placeholder="Zadaj celé meno" name="name0" id="name0">
+
+                                    <label for="username"><b>Prihlasovacie meno</b></label>
+                                    <input type="text" placeholder="Zadaj svoj username" name="username0" id="username0">
+                                </div>
+
+                                <div class="form-group row hide" style="margin-left: 12px; margin-right: 20%"  id="register01">
+                                    <label for="username"><b>Prihlasovacie meno</b></label>
+                                    <input type="text" placeholder="Zadaj svoj username" name="login0" id="login0">
+                                </div>
+                            </div>
+                            <div class="form-group row" style="margin-left: 12px; margin-right: 20%" >
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Výber súboru</span>
+                                    </div>
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" name ="files" id="fileinput" multiple required/>
+                                        <label class="custom-file-label" for="fileinput">...</label>
+                                    </div>
+                                </div>
+
+                                <div style="margin-left: 30%" class="col-sm-3">
+                                    <div class="content">
+                                        <div class="inner">
+                                            <div class="submit-buttons">
+                                                <div class="buttonsBlock">
+                                                    <div class="submit-buttons__content">
+                                                        <button class="submit-button submit-button--1" type="submit" id="subor"  title="Submit">
+                                                            <span class="submit-button__pending submit-button__pending--1"></span>
+                                                            <span class="submit-button__text submit-button__text--1">Odošli</span>
+                                                            <span class="submit-button__loaded submit-button__loaded--1"> <span>Odoslané!</span></span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
                     <div class="form-group row">
                         <div class="col-sm-7">
-                            <button style="margin-left: 10px;" id="getALlDatas" type="button" class="form-control btn">Get All Files</button>
+                            <button style="margin-left: 10px;" id="getALlDatas" type="button" class="form-control btn hide">Get All Files</button>
                         </div>
                     </div>
 
