@@ -1,11 +1,15 @@
 package Futronic.controller;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
 import java.awt.image.DataBufferByte;
 import java.io.*;
 import java.net.Socket;
 import java.util.Base64;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import Futronic.Openfinger;
 import Futronic.model.Fingerprint;
@@ -26,6 +30,8 @@ import org.springframework.web.multipart.MultipartFile;
 import Futronic.service.UsersStorageService;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 
 @Controller
 @EnableAutoConfiguration
@@ -43,69 +49,172 @@ public class DocController {
 		List<User> users = usersStorageService.getFiles();
 		model.addAttribute("docs", users);
 		model.addAttribute("ids", usersStorageService.getIds());
-		//model.addAttribute("types", docStorageService.getTypes());
+		return "basic";
+	}
+	@GetMapping("/scan")
+	public String getScan(Model model) {
+		List<User> users = usersStorageService.getFiles();
+		model.addAttribute("docs", users);
+		model.addAttribute("ids", usersStorageService.getIds());
+		return "basic";
+	}
+	@GetMapping("/uploadFiles")
+	public String getUpload(Model model) {
+		List<User> users = usersStorageService.getFiles();
+		model.addAttribute("docs", users);
+		model.addAttribute("ids", usersStorageService.getIds());
 		return "basic";
 	}
 
 	@PostMapping("/uploadFiles")
-	public String uploadMultipleFiles(@RequestParam("files") MultipartFile[] files, String inputGroupSelect01, String name0, String username0, String login0,  Model model) throws IOException, InterruptedException {
-		String meno = null;
+	public String uploadMultipleFiles(@RequestParam("files") MultipartFile[] files, String inputGroupSelect01, String name0, String username0, String login0, double sigma0, double lambda0, int block0,  Model model) throws IOException, InterruptedException {
 		for (MultipartFile file: files) {
-			try{
-				Socket clientSocket = new Socket("147.175.106.8",55555);
-				byte [] data = file.getBytes();
-				ByteArrayInputStream bis = new ByteArrayInputStream(data);
-				BufferedImage image = ImageIO.read(bis);
+			try {
+				Socket clientSocket = new Socket("147.175.106.8", 55555);
+				System.out.println(file.getContentType());
+				byte[] data = new byte[320];
+				BufferedImage image = ImageIO.read(file.getInputStream());
+				if(inputGroupSelect01.equals("showing")){
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					ImageIO.write(image, "png", baos);
+					byte[] bytes = baos.toByteArray();
+
+					byte[] encodeBase64 = Base64.getEncoder().encode(bytes);
+					String s = new String(encodeBase64, "UTF-8");
+					model.addAttribute("fotka",s);
+					System.out.println("Converted Successfully!");
+				}
+				//Preprocessing
+				else if(inputGroupSelect01.equals("preprocessing")){
+					BufferedImage imag = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+					imag.createGraphics().drawImage(image, 0, 0, Color.WHITE, null);
+					byte[] ara = ((DataBufferByte) imag.getRaster().getDataBuffer()).getData();
+					ByteString bat = ByteString.copyFrom(ara);
+
+					FingerprintOuterClass.Fingerprint person = FingerprintOuterClass.Fingerprint.newBuilder().setHeight(image.getHeight()).setWidth(image.getWidth())
+							.setResolution(500).setColorValue(0).setData(bat).build();
+					PreprocessingRequestOuterClass.PreprocessingParams params = PreprocessingRequestOuterClass.PreprocessingParams.newBuilder().setBlockSize(block0).setGaborLambda(lambda0).setGaborSigma(sigma0).build();
+					PreprocessingRequestOuterClass.PreprocessingRequest request = PreprocessingRequestOuterClass.PreprocessingRequest.newBuilder().setFingerprint(person).setParams(params).build();
+					WrapperOuterClass.Wrapper message = WrapperOuterClass.Wrapper.newBuilder().setHeader(WrapperOuterClass.Wrapper.Header.PREPROCESSING_REQUEST).setPreprocRequest(request).build();
+
+					message.writeTo(clientSocket.getOutputStream());
+					//REQUEST<-------------->RESPONSE
+					WrapperOuterClass.Wrapper response = communicationService.parser(clientSocket);
+					BufferedImage image1 = new BufferedImage(response.getPreprocResponse().getResults(0).getWidth(), response.getPreprocResponse().getResults(0).getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+					byte[] array = ((DataBufferByte) image1.getRaster().getDataBuffer()).getData();
+					System.arraycopy(response.getPreprocResponse().getResults(0).getData().toByteArray(), 0, array, 0, array.length);
+
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					ImageIO.write(image1, "png", baos);
+					byte[] bytes = baos.toByteArray();
+
+					byte[] encodeBase64 = Base64.getEncoder().encode(bytes);
+					String s = new String(encodeBase64, "UTF-8");
+					model.addAttribute("fotka",s);
+				}
 				//registration
-				if(username0.length()>0) {
-					ByteString bs = ByteString.readFrom(bis);
-					ExtractionRequestOuterClass.Fingerprint person = ExtractionRequestOuterClass.Fingerprint.newBuilder()
-							.setHeight(300).setWidth(300).setResolution(500).setColorValue(0).setData(bs).build();
-					ExtractionRequestOuterClass.ExtractionRequest request = ExtractionRequestOuterClass.ExtractionRequest.newBuilder().setFingerprint(person).build();
-					System.out.println(request.getFingerprint().toByteArray().length); //velkost
-					request.writeTo(clientSocket.getOutputStream());
-		// RESPONSE
+				else if(inputGroupSelect01.equals("registration")) {
+					BufferedImage imag = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+					imag.createGraphics().drawImage(image, 0, 0, Color.WHITE, null);
+					byte[] ara = ((DataBufferByte) imag.getRaster().getDataBuffer()).getData();
+					ByteString bat = ByteString.copyFrom(ara);
+
+					ExtractionRequestOuterClass.Fingerprint fprint = ExtractionRequestOuterClass.Fingerprint.newBuilder().setHeight(image.getHeight()).setWidth(image.getWidth()).setResolution(500).setColorValue(0).setData(bat).build();
+
+					ExtractionRequestOuterClass.ExtractionRequest request = ExtractionRequestOuterClass.ExtractionRequest.newBuilder().setFingerprint(fprint).build();
+
+					WrapperOuterClass.Wrapper message = WrapperOuterClass.Wrapper.newBuilder().setHeader(WrapperOuterClass.Wrapper.Header.EXTRACTION_REQUEST).setExtractRequest(request).build();
+
+					message.writeTo(clientSocket.getOutputStream());
+
+					//    REQUEST <--------------> RESPONSE
 					WrapperOuterClass.Wrapper response = communicationService.parser(clientSocket);
 
-					usersStorageService.saveUser(name0, username0, data,response.getExtractResponse().getLevel2Vector().getLevel2VectorList());
+					usersStorageService.saveUser(name0, username0, ara, response.getExtractResponse().getLevel2Vector().getLevel2VectorList());
+					String s = "Registrácia užívateľa a pridanie odtlačku prebehlo úspešne !";
+					model.addAttribute("vysledok",s);
 				}
 				//verification
 				else if(login0.length()>0 ) {
 					List<Fingerprint> userFingerprints = usersStorageService.findUserFingers(login0);
+					String s;
+					if (userFingerprints!=null) {
+						BufferedImage imag = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+						imag.createGraphics().drawImage(image, 0, 0, Color.WHITE, null);
+						byte[] ara = ((DataBufferByte) imag.getRaster().getDataBuffer()).getData();
+						ByteString bat = ByteString.copyFrom(ara);
+					FingerprintOuterClass.Fingerprint fprint = FingerprintOuterClass.Fingerprint.newBuilder().setHeight(image.getHeight()).setWidth(image.getWidth()).setResolution(500).setColorValue(0).setData(bat).build();
+					VerificationRequestOuterClass.VerificationRequest.Builder request = VerificationRequestOuterClass.VerificationRequest.newBuilder();
+					request.setFingerprint(fprint);
+
+					for (Fingerprint f : userFingerprints){
+						List<Level2> level2 = f.getLevels();
+						Level2VectorOuterClass.Level2Vector.Builder lvl2 = Level2VectorOuterClass.Level2Vector.newBuilder();
+						for(Level2 lvl : level2){
+							Level2OuterClass.Level2 level = Level2OuterClass.Level2.newBuilder().setX(lvl.getX()).setY(lvl.getY()).setAngle(lvl.getAngle()).setType(lvl.getType()).setQuality(lvl.getQuality()).setImgWidth(lvl.getImg_width()).setImgHeight(lvl.getImg_height()).build();
+							lvl2.addLevel2Vector(level);
+						}
+						request.addLevel2Vectors(lvl2);
+					}
+					WrapperOuterClass.Wrapper message = WrapperOuterClass.Wrapper.newBuilder().setHeader(WrapperOuterClass.Wrapper.Header.VERIFICATION_REQUEST).setVerifyRequest(request).build();
+					message.writeTo(clientSocket.getOutputStream());
+					//    REQUEST <--------------> RESPONSE
+					WrapperOuterClass.Wrapper response = communicationService.parser(clientSocket);
+						System.out.println(response.getVerifyResponse().getScore());
+						if (response.getVerifyResponse().getResult()) {
+							s = "Verifikácia používateľa " + login0 + " prebehla úspešne !";
+						} else {
+							s = "Verifikácia používateľa " + login0 + " sa nepodarila, skúste ešte raz !";
+						}
+					}
+					else{
+						s = "Meno používateľa je zlé";
+					}
+					model.addAttribute("vysledok",s);
 				}
 				//identification
-				else{
+				else {
 					List<Fingerprint> fingerprints = usersStorageService.getFingers();
+					BufferedImage imag = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+					imag.createGraphics().drawImage(image, 0, 0, Color.WHITE, null);
+					byte[] ara = ((DataBufferByte) imag.getRaster().getDataBuffer()).getData();
+					ByteString bat = ByteString.copyFrom(ara);
+					FingerprintOuterClass.Fingerprint fprint = FingerprintOuterClass.Fingerprint.newBuilder().setHeight(image.getHeight()).setWidth(image.getWidth()).setResolution(500).setColorValue(0).setData(bat).build();
+					IdentificationRequestOuterClass.IdentificationRequest.Builder request = IdentificationRequestOuterClass.IdentificationRequest.newBuilder();
+					request.setFingerprint(fprint);
+
+					for (Fingerprint f : fingerprints){
+						List<Level2> level2 = f.getLevels();
+						IdentificationRequestOuterClass.Level2VectorOfFingerprint.Builder vector = IdentificationRequestOuterClass.Level2VectorOfFingerprint.newBuilder();
+						Level2VectorOuterClass.Level2Vector.Builder lvl2 = Level2VectorOuterClass.Level2Vector.newBuilder();
+
+						for(Level2 lvl : level2){
+							Level2OuterClass.Level2 level = Level2OuterClass.Level2.newBuilder().setX(lvl.getX()).setY(lvl.getY()).setAngle(lvl.getAngle()).setType(lvl.getType()).setQuality(lvl.getQuality()).setImgWidth(lvl.getImg_width()).setImgHeight(lvl.getImg_height()).build();
+							lvl2.addLevel2Vector(level);
+						}
+						vector.setLevel2Vector(lvl2).setFingerprintId(f.getId());
+						request.addVectors(vector);
+					}
+					WrapperOuterClass.Wrapper message = WrapperOuterClass.Wrapper.newBuilder().setHeader(WrapperOuterClass.Wrapper.Header.IDENTIFICATION_REQUEST).setIdentifyRequest(request).build();
+					message.writeTo(clientSocket.getOutputStream());
+					//    REQUEST <--------------> RESPONSE
+					WrapperOuterClass.Wrapper response = communicationService.parser(clientSocket);
+					User user = usersStorageService.findUserByFingerprintId(response.getIdentifyResponse().getFingerprintId());
+					String s;
+					String pouzivatel = null;
+					System.out.println(response.getIdentifyResponse().getSuccess());
+					System.out.println(response.getIdentifyResponse().getFingerprintId());
+					if(response.getIdentifyResponse().getSuccess()){
+						s="Identifikácia prebehla úspešne, nájdený používateľ : ";
+						pouzivatel = user.getName();
+					}
+					else{
+						s="Identifikácia sa nepodarila, nebola nájdena zhoda, skúste ešte raz !";
+					}
+					model.addAttribute("vysledok",s);
+					model.addAttribute("uzivatel",pouzivatel);
 				}
-				ByteString bs = ByteString.copyFrom(((DataBufferByte)image.getRaster().getDataBuffer()).getData());
-				Openfinger.Fingerprint person = Openfinger.Fingerprint.newBuilder().setHeight(300).setWidth(300)
-						.setResolution(500).setColor(Openfinger.Fingerprint.Colorspace.RGB).setData(bs).build();
-				Openfinger.PreprocessingRequest requestt = Openfinger.PreprocessingRequest.newBuilder().setFingerprint(person).build();
-				System.out.println(requestt.getFingerprint().toByteArray().length);
-				requestt.writeTo(clientSocket.getOutputStream());
-				// ZAPIS <- -------------------------------------------------- -> ODPOVED
-				InputStream is = clientSocket.getInputStream();
-				DataInputStream ds = new DataInputStream(is);
-				int buffSize = ds.readInt();
-				byte[] buffer = new byte[buffSize];
-				ds.readFully(buffer);
-
-				Openfinger.Fingerprint person1 = Openfinger.Fingerprint.parseFrom(buffer);
-				BufferedImage image1 = new BufferedImage(person1.getWidth(), person1.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
-				byte[] array = ((DataBufferByte) image1.getRaster().getDataBuffer()).getData();
-				System.arraycopy(person1.getData().toByteArray(), 0, array, 0, array.length);
-
-				System.out.println(person1.getWidth());
-
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				ImageIO.write(image1, "bmp", baos);
-				byte[] bytes = baos.toByteArray();
-
-				byte[] encodeBase64 = Base64.getEncoder().encode(bytes);
-				String s = new String(encodeBase64, "UTF-8");
-				model.addAttribute("fotka",s);
-
-			} catch(Exception e){
+			}catch(Exception e){
 				e.toString();
 			}
 		}
@@ -113,7 +222,7 @@ public class DocController {
 	}
 
 	@PostMapping("/scan")
-	public String scan(Model model, String inputGroupSelect02, String name, String username, String login ) throws IOException, InterruptedException {
+	public String scan(Model model, String inputGroupSelect02, String name, String username, String login, double sigma, double lambda, int block ) throws IOException, InterruptedException {
 		Scanner scanner = new Scanner();
 		scanner.SetOptions(1, scanner.FTR_OPTIONS_INVERT_IMAGE);
 		if(scanner.OpenDevice()){
@@ -121,28 +230,34 @@ public class DocController {
 			byte[] data = new byte[320*480];
 			scanner.GetImage2(3,data);
 
-			/*BufferedImage image1 = new BufferedImage(320, 480, BufferedImage.TYPE_BYTE_GRAY);
-			byte[] array = ((DataBufferByte) image1.getRaster().getDataBuffer()).getData();
-			System.arraycopy(data, 0, array, 0, array.length);
-			ImageIO.write(image1 , "bmp", new File("final_file.bmp") );
-			System.out.println("Converted Successfully!");*/
+			if(inputGroupSelect02.equals("showing")){
+				BufferedImage image1 = new BufferedImage(320, 480, BufferedImage.TYPE_BYTE_GRAY);
+				byte[] array = ((DataBufferByte) image1.getRaster().getDataBuffer()).getData();
+				System.arraycopy(data, 0, array, 0, array.length);
 
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				ImageIO.write(image1 , "bmp", baos);
+				byte[] bytes = baos.toByteArray();
+
+				byte[] encodeBase64 = Base64.getEncoder().encode(bytes);
+				String s = new String(encodeBase64, "UTF-8");
+				model.addAttribute("fotka",s);
+				System.out.println("Converted Successfully!");
+			}
 			//preprocessing
-			if(inputGroupSelect02.equals("preprocessing")){
+			else if(inputGroupSelect02.equals("preprocessing")){
 				ByteString bs = ByteString.copyFrom(data);
 				FingerprintOuterClass.Fingerprint person = FingerprintOuterClass.Fingerprint.newBuilder().setHeight(480).setWidth(320)
 						.setResolution(500).setColorValue(0).setData(bs).build();
-				PreprocessingRequestOuterClass.PreprocessingRequest request = PreprocessingRequestOuterClass.PreprocessingRequest.newBuilder().setFingerprint(person).build();
+				PreprocessingRequestOuterClass.PreprocessingParams params = PreprocessingRequestOuterClass.PreprocessingParams.newBuilder().setBlockSize(block).setGaborLambda(lambda).setGaborSigma(sigma).build();
+				PreprocessingRequestOuterClass.PreprocessingRequest request = PreprocessingRequestOuterClass.PreprocessingRequest.newBuilder().setFingerprint(person).setParams(params).build();
 				WrapperOuterClass.Wrapper message = WrapperOuterClass.Wrapper.newBuilder().setHeader(WrapperOuterClass.Wrapper.Header.PREPROCESSING_REQUEST).setPreprocRequest(request).build();
-
 				message.writeTo(clientSocket.getOutputStream());
 				//REQUEST<-------------->RESPONSE
 				WrapperOuterClass.Wrapper response = communicationService.parser(clientSocket);
 				BufferedImage image1 = new BufferedImage(response.getPreprocResponse().getResults(0).getWidth(), response.getPreprocResponse().getResults(0).getHeight(), BufferedImage.TYPE_BYTE_GRAY);
 				byte[] array = ((DataBufferByte) image1.getRaster().getDataBuffer()).getData();
 				System.arraycopy(response.getPreprocResponse().getResults(0).getData().toByteArray(), 0, array, 0, array.length);
-
-
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				ImageIO.write(image1, "bmp", baos);
 				byte[] bytes = baos.toByteArray();
@@ -153,7 +268,7 @@ public class DocController {
 
 			}
 			//registration
-			else if(username.length()>0) {
+			else if(inputGroupSelect02.equals("registration")) {
 				ByteString bs = ByteString.copyFrom(data); // obrazok zo scanneru
 				ExtractionRequestOuterClass.Fingerprint fprint = ExtractionRequestOuterClass.Fingerprint.newBuilder().setHeight(480).setWidth(320).setResolution(500).setColorValue(0).setData(bs).build();
 
@@ -167,31 +282,42 @@ public class DocController {
 				WrapperOuterClass.Wrapper response = communicationService.parser(clientSocket);
 
 				usersStorageService.saveUser(name, username, data,response.getExtractResponse().getLevel2Vector().getLevel2VectorList());
+				String s = "Registrácia užívateľa a pridanie odtlačku prebehlo úspešne !";
+				model.addAttribute("vysledok",s);
 			}
 			//verification
-			else if(login.length()>0 ) {
+			else if(inputGroupSelect02.equals("verification")) {
 				List<Fingerprint> userFingerprints = usersStorageService.findUserFingers(login);
-				ByteString bs = ByteString.copyFrom(data);
-				FingerprintOuterClass.Fingerprint fprint = FingerprintOuterClass.Fingerprint.newBuilder().setHeight(480).setWidth(320).setResolution(500).setColorValue(0).setData(bs).build();
-				VerificationRequestOuterClass.VerificationRequest.Builder request = VerificationRequestOuterClass.VerificationRequest.newBuilder();
-				request.setFingerprint(fprint);
-
-				for (Fingerprint f : userFingerprints){
-					List<Level2> level2 = f.getLevels();
-					Level2VectorOuterClass.Level2Vector.Builder lvl2 = Level2VectorOuterClass.Level2Vector.newBuilder();
-					for(Level2 lvl : level2){
-						Level2OuterClass.Level2 level = Level2OuterClass.Level2.newBuilder().setX(lvl.getX()).setY(lvl.getY()).setAngle(lvl.getAngle()).setType(lvl.getType()).setQuality(lvl.getQuality()).setImgWidth(lvl.getImg_width()).setImgHeight(lvl.getImg_height()).build();
-						lvl2.addLevel2Vector(level);
+				String s;
+				if (userFingerprints!=null) {
+					ByteString bs = ByteString.copyFrom(data);
+					FingerprintOuterClass.Fingerprint fprint = FingerprintOuterClass.Fingerprint.newBuilder().setHeight(480).setWidth(320).setResolution(500).setColorValue(0).setData(bs).build();
+					VerificationRequestOuterClass.VerificationRequest.Builder request = VerificationRequestOuterClass.VerificationRequest.newBuilder();
+					request.setFingerprint(fprint);
+					for (Fingerprint f : userFingerprints) {
+						List<Level2> level2 = f.getLevels();
+						Level2VectorOuterClass.Level2Vector.Builder lvl2 = Level2VectorOuterClass.Level2Vector.newBuilder();
+						for (Level2 lvl : level2) {
+							Level2OuterClass.Level2 level = Level2OuterClass.Level2.newBuilder().setX(lvl.getX()).setY(lvl.getY()).setAngle(lvl.getAngle()).setType(lvl.getType()).setQuality(lvl.getQuality()).setImgWidth(lvl.getImg_width()).setImgHeight(lvl.getImg_height()).build();
+							lvl2.addLevel2Vector(level);
+						}
+						request.addLevel2Vectors(lvl2);
 					}
-					request.addLevel2Vectors(lvl2);
-				}
-				WrapperOuterClass.Wrapper message = WrapperOuterClass.Wrapper.newBuilder().setHeader(WrapperOuterClass.Wrapper.Header.VERIFICATION_REQUEST).setVerifyRequest(request).build();
-				message.writeTo(clientSocket.getOutputStream());
-				//    REQUEST <--------------> RESPONSE
-				WrapperOuterClass.Wrapper response = communicationService.parser(clientSocket);
+					WrapperOuterClass.Wrapper message = WrapperOuterClass.Wrapper.newBuilder().setHeader(WrapperOuterClass.Wrapper.Header.VERIFICATION_REQUEST).setVerifyRequest(request).build();
+					message.writeTo(clientSocket.getOutputStream());
+					//    REQUEST <--------------> RESPONSE
 
-				System.out.println(response.getVerifyResponse().getResult());
-				System.out.println(response.getVerifyResponse().getScore());
+					WrapperOuterClass.Wrapper response = communicationService.parser(clientSocket);
+					if (response.getVerifyResponse().getResult()) {
+						s = "Verifikácia používateľa " + login + " prebehla úspešne !";
+					} else {
+						s = "Verifikácia používateľa " + login + " sa nepodarila, skúste ešte raz !";
+					}
+				}
+				else{
+					s = "Meno používateľa je zlé";
+				}
+				model.addAttribute("vysledok",s);
 			}
 			//identification
 			else {
@@ -220,8 +346,20 @@ public class DocController {
 				//    REQUEST <--------------> RESPONSE
 
 				WrapperOuterClass.Wrapper response = communicationService.parser(clientSocket);
+				User user = usersStorageService.findUserByFingerprintId(response.getIdentifyResponse().getFingerprintId());
+				String s;
+				String pouzivatel = null;
 				System.out.println(response.getIdentifyResponse().getSuccess());
 				System.out.println(response.getIdentifyResponse().getFingerprintId());
+				if(response.getIdentifyResponse().getSuccess()){
+					s="Identifikácia prebehla úspešne, nájdený používateľ : ";
+					pouzivatel = user.getName();
+				}
+				else{
+					s="Identifikácia sa nepodarila, nebola nájdena zhoda, skúste ešte raz !";
+				}
+				model.addAttribute("vysledok",s);
+				model.addAttribute("uzivatel",pouzivatel);
 			}
 			scanner.CloseDevice();
 		}

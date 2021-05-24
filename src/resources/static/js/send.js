@@ -1,21 +1,18 @@
-// Code By Webdevtrick ( https://webdevtrick.com )
+var a = 0;
+
 const DOM = {
     submitBtn: '.submit-button',
     submitPending: '.submit-button__pending',
     submitText: '.submit-button__text',
     submitLoaded: '.submit-button__loaded' };
 
-//find exact children of the button
-const findChildren = elem => {
 
+const findChildren = elem => {
     return [
         elem.querySelector(DOM.submitPending),
         elem.querySelector(DOM.submitText),
         elem.querySelector(DOM.submitLoaded)];
-
 };
-
-var a = 0;
 
 function show(){
     a = a + 1;
@@ -43,14 +40,32 @@ $('#inputGroupSelect02').on('change', function()
     if (this.value == "registration"){
         document.getElementById('register').style.display = 'block';
         document.getElementById('register1').style.display = 'none';
+        document.getElementById('register2').style.display = 'none';
+    }
+    if (this.value == "selected"){
+        document.getElementById('register').style.display = 'none';
+        document.getElementById('register1').style.display = 'none';
+        document.getElementById('register2').style.display = 'none';
     }
     if (this.value == "verification"){
         document.getElementById('register1').style.display = 'block';
         document.getElementById('register').style.display = 'none';
+        document.getElementById('register2').style.display = 'none';
     }
     if (this.value == "identification") {
         document.getElementById('register').style.display = 'none';
         document.getElementById('register1').style.display = 'none';
+        document.getElementById('register2').style.display = 'none';
+    }
+    if (this.value == "showing") {
+        document.getElementById('register').style.display = 'none';
+        document.getElementById('register1').style.display = 'none';
+        document.getElementById('register2').style.display = 'none';
+    }
+    if (this.value == "preprocessing") {
+        document.getElementById('register').style.display = 'none';
+        document.getElementById('register1').style.display = 'none';
+        document.getElementById('register2').style.display = 'block';
     }
 });
 
@@ -59,18 +74,36 @@ $('#inputGroupSelect01').on('change', function()
     if (this.value == "registration"){
         document.getElementById('register0').style.display = 'block';
         document.getElementById('register01').style.display = 'none';
+        document.getElementById('register02').style.display = 'none';
+    }
+    if (this.value == "selected"){
+        document.getElementById('register0').style.display = 'none';
+        document.getElementById('register01').style.display = 'none';
+        document.getElementById('register02').style.display = 'none';
     }
     if (this.value == "verification"){
         document.getElementById('register01').style.display = 'block';
         document.getElementById('register0').style.display = 'none';
+        document.getElementById('register02').style.display = 'none';
     }
     if (this.value == "identification") {
         document.getElementById('register0').style.display = 'none';
         document.getElementById('register01').style.display = 'none';
+        document.getElementById('register02').style.display = 'none';
+    }
+    if (this.value == "showing") {
+        document.getElementById('register0').style.display = 'none';
+        document.getElementById('register01').style.display = 'none';
+        document.getElementById('register02').style.display = 'none';
+    }
+    if (this.value == "preprocessing") {
+        document.getElementById('register0').style.display = 'none';
+        document.getElementById('register01').style.display = 'none';
+        document.getElementById('register02').style.display = 'block';
     }
 });
 
-//find node parent function
+
 const findParent = (elem, referenceElem) => {
 
     const className = referenceElem.slice(0, referenceElem.length);

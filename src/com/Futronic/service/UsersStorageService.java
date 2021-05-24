@@ -104,6 +104,25 @@ public class UsersStorageService {
 		return null;
 	}
 
+	public User findUserByFingerprintId(Integer id) {
+		try{
+			List<User> users = getUsers();
+			for(User user : users){
+
+				List<Fingerprint> fprints = user.getFingers();
+				for(Fingerprint fprint : fprints){
+					if(fprint.getId().equals(id)){
+						return user;
+					}
+				}
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 
 	public List<Fingerprint> findUserFingers(String username){
 		List<User> users = getUsers();

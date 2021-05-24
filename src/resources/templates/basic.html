@@ -20,55 +20,94 @@
     <title>Biometric app</title>
 </head>
 <body>
-<div id="model">
     <div id="page-container">
+        <div id="model">
         <nav>
             <ul class="menu">
                 <li style="float: left;"><a href="/"> <img src="../STU-ncnv.png" style="height:85px;"></a></li>
             </ul>
         </nav>
-        <div class="container">
             <div class="row">
-                <article class="col-md-7 lavy">
+                <article class="col-lg-7 lavy">
 
-
-                    <h3 style="margin: 20px;">Scanovanie odtlačkov</h3>
-                    <form id="scan" name="uploadFiles" method="post" th:action=@{/scan}>
-                        <div class="form-group row" style="margin-left: 12px; margin-right: 20%" >
-                            <div class="form-group row input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <label class="input-group-text" for="inputGroupSelect02">Požiadavka</label>
-                                </div>
-                                <select size="1" class="custom-select" name="inputGroupSelect02" id="inputGroupSelect02" onclick="changeFunc(event);">
-                                    <option selected>Vyber požiadavku</option>
+                    <form class="border border-danger rounded formstyle" id="scan" name="uploadFiles" method="post" th:action=@{/scan}>
+                        <h3 >Scanovanie odtlačkov</h3>
+                            <div class="form-group row">
+                                <div class="col-sm-1"></div>
+                                <label for="inputGroupSelect02" class="col-sm-2 col-form-label col-form-label-lg"><b>Požiadavka</b></label>
+                                <div class="col-sm-7">
+                                <select class="form-control form-control-lg" name="inputGroupSelect02" id="inputGroupSelect02" onclick="changeFunc(event);">
+                                    <option value="selected" selected>Vyber požiadavku</option>
                                     <option value="registration">Registrácia</option>
                                     <option value="verification">Verifikácia</option>
                                     <option value="identification">Identifikácia</option>
                                     <option value="preprocessing">Preprocesing odtlačku</option>
+                                    <option value="showing">Zobraz odtlačok</option>
                                 </select>
+                                </div>
+                                <div class="col-sm-1"></div>
                             </div>
 
-                            <div class="form-group row hide" style="margin-left: 12px; margin-right: 20%" id="register">
-                                <label for="name"><b>Meno a priezvisko</b></label>
-                                <input class= "form-control" type="text" placeholder="Zadaj celé meno"  name="name" id="name">
-
-                                <label for="username"><b>Prihlasovacie meno</b></label>
-                                <input type="text" placeholder="Zadaj svoj username"  name="username" id="username">
+                            <div class="form-row hide" id="register">
+                                <div class="form-group row">
+                                    <div class="col-sm-2"></div>
+                                    <label for="name" class="col-sm-3 col-form-label"><b>Meno a priezvisko</b></label>
+                                    <div class="col-sm-5">
+                                        <input class= "form-control" type="text" placeholder="Zadaj celé meno"  name="name" id="name">
+                                    </div>
+                                    <div class="col-sm-2"></div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-2"></div>
+                                    <label class="col-sm-3 col-form-label" for="username"><b>Prihlasovacie meno</b></label>
+                                    <div class="col-sm-5">
+                                        <input type="text" class="form-control" placeholder="Zadaj svoj username"  name="username" id="username">
+                                    </div>
+                                    <div class="col-sm-2"></div>
+                                </div>
                             </div>
 
-                            <div class="form-group row hide" style="margin-left: 12px; margin-right: 20%"  id="register1">
-                                <label for="username"><b>Prihlasovacie meno</b></label>
-                                <input type="text" placeholder="Zadaj svoj username"  name="login" id="login">
+
+                            <div class="form-group row hide" id="register1">
+                                <div class="form-group row">
+                                    <div class="col-sm-2"></div>
+                                    <label for="username" class="col-sm-3 col-form-label"><b>Prihlasovacie meno</b></label>
+                                    <div class="col-sm-5">
+                                        <input type="text" class="form-control" placeholder="Zadaj svoj username"  name="login" id="login">
+                                    </div>
+                                    <div class="col-sm-2"></div>
+                                </div>
                             </div>
 
-                            <div style="margin-left: 30%" class="col-sm-3">
 
+                        <div class="form-row hide" id="register2">
+                            <div class="form-group row">
+                                <div class="form-group col-md-4">
+                                    <label for="name"><b>Gabor Lambda</b></label>
+                                    <input class= "form-control" type="number" step="any" placeholder="Lambda"  name="lambda" id="lambda">
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                    <label for="username"><b>Gabor Sigma</b></label>
+                                    <input type="number" step="any" class="form-control" placeholder="Sigma"  name="sigma" id="sigma">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="" for="username"><b>Block size</b></label>
+                                    <input type="number" step="any" class="form-control" placeholder="Block"  name="block" id="block">
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group row">
+                        <div class="col-sm-5"></div>
+                            <div class="col-sm-2">
                                 <div class="content">
                                     <div class="inner">
                                         <div class="submit-buttons">
                                             <div class="buttonsBlock">
                                                 <div class="submit-buttons__content">
-                                                    <button class="submit-button submit-button--1" type="submit" id="scaner"  title="Submit">
+                                                    <button class="submit-button submit-button--1" type="submit" id="scaner" title="Submit">
                                                         <span class="submit-button__pending submit-button__pending--1"></span>
                                                         <span class="submit-button__text submit-button__text--1">Scan</span>
                                                         <span class="submit-button__loaded submit-button__loaded--1"> <span>Scan!</span></span>
@@ -78,58 +117,95 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
+                        <div class="col-sm-5"></div>
                         </div>
                     </form>
 
-                    <h3 style="margin: 20px;">Upload odtlačkov
-                        <label class="switch">
-                            <input type="checkbox" name="upload" value="ano" onclick="show();">
-                            <span class="slider round"></span>
-                        </label>
-                    </h3>
-                    <div id="div2" class="hide">
 
-                        <form class="md-form" id="uploadFiles" name="uploadFiles" method="post" th:action=@{/uploadFiles} encType="multipart/form-data">
-                            <div class="form-group row" style="margin-left: 12px; margin-right: 20%" >
-                                <div class="form-group row input-group mb-3">
-                                    <div class="input-group-prepend">
-                                        <label class="input-group-text" for="inputGroupSelect01">Požiadavka</label>
-                                    </div>
-                                    <select class="custom-select" id="inputGroupSelect01" name="inputGroupSelect01" onchange="changeFunc1(event);">
-                                        <option selected>Vyber požiadavku</option>
+                        <form class="border border-danger rounded formstyle" id="uploadFiles" name="uploadFiles" method="post" th:action=@{/uploadFiles} encType="multipart/form-data">
+                            <h3>Upload odtlačkov
+                                <label class="switch">
+                                    <input type="checkbox" name="upload" value="ano" onclick="show();">
+                                    <span class="slider round"></span>
+                                </label>
+                            </h3>
+                            <div id="div2" class="hide">
+                                <div class="form-group row">
+                                    <div class="col-sm-1"></div>
+                                        <label class="col-sm-2 col-form-label col-form-label-lg" for="inputGroupSelect01"><b>Požiadavka</b></label>
+                                    <div class="col-sm-8">
+                                    <select class="form-control form-control-lg" id="inputGroupSelect01" name="inputGroupSelect01" onchange="changeFunc1(event);">
+                                        <option value="selected" selected>Vyber požiadavku</option>
+                                        <option value="registration">Registrácia</option>
                                         <option value="verification">Verifikácia</option>
                                         <option value="identification">Identifikácia</option>
-                                        <option value="registration">Registrácia</option>
                                         <option value="preprocessing">Preprocesing odtlačku</option>
+                                        <option value="showing">Zobraz odtlačok</option>
                                     </select>
-                                </div>
-                                <div class="form-group row hide" style="margin-left: 12px; margin-right: 20%" id="register0">
-                                    <label for="name"><b>Meno a priezvisko</b></label>
-                                    <input type="text" placeholder="Zadaj celé meno" name="name0" id="name0">
-
-                                    <label for="username"><b>Prihlasovacie meno</b></label>
-                                    <input type="text" placeholder="Zadaj svoj username" name="username0" id="username0">
+                                    </div>
+                                    <div class="col-sm-1"></div>
                                 </div>
 
-                                <div class="form-group row hide" style="margin-left: 12px; margin-right: 20%"  id="register01">
-                                    <label for="username"><b>Prihlasovacie meno</b></label>
-                                    <input type="text" placeholder="Zadaj svoj username" name="login0" id="login0">
+                                <div class="form-row hide" id="register0">
+                                    <div class="form-group row">
+                                        <div class="col-sm-2"></div>
+                                        <label for="name0" class="col-sm-3 col-form-label"><b>Meno a priezvisko</b></label>
+                                        <div class="col-sm-5">
+                                            <input class= "form-control" type="text" placeholder="Zadaj celé meno"  name="name0" id="name0">
+                                        </div>
+                                        <div class="col-sm-2"></div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-sm-2"></div>
+                                        <label class="col-sm-3 col-form-label" for="username0"><b>Prihlasovacie meno</b></label>
+                                        <div class="col-sm-5">
+                                            <input type="text" class="form-control" placeholder="Zadaj svoj username"  name="username0" id="username0">
+                                        </div>
+                                        <div class="col-sm-2"></div>
+                                    </div>
                                 </div>
+
+                                <div class="form-group row hide" id="register01">
+                                    <div class="form-group row">
+                                        <div class="col-sm-2"></div>
+                                        <label for="username" class="col-sm-3 col-form-label"><b>Prihlasovacie meno</b></label>
+                                        <div class="col-sm-5">
+                                            <input type="text" class="form-control" placeholder="Zadaj svoj username"  name="login0" id="login0">
+                                        </div>
+                                        <div class="col-sm-2"></div>
+                                    </div>
+                                </div>
+
+                                <div class="form-row hide" id="register02">
+                                    <div class="form-group row">
+                                        <div class="form-group col-md-4">
+                                            <label for="name"><b>Gabor Lambda</b></label>
+                                            <input class= "form-control" type="number" step="any" placeholder="Lambda"  name="lambda0" id="lambda0">
+                                        </div>
+
+                                        <div class="form-group col-md-4">
+                                            <label for="username"><b>Gabor Sigma</b></label>
+                                            <input type="number" step="any" class="form-control" placeholder="Sigma"  name="sigma0" id="sigma0">
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label class="" for="username"><b>Block size</b></label>
+                                            <input type="number" step="any" class="form-control" placeholder="block"  name="block0" id="block0">
+                                        </div>
+                                    </div>
+                                </div>
+
+                            <div class="form-group row">
+                                    <div class="col-sm-1"></div>
+                                        <label class="col-sm-2 col-form-label ">Nahrať odtlačok</label>
+                                    <div class="col-sm-7">
+                                        <input type="file" class="form-control form-control-lg" name="files" id="files" multiple/>
+                                    </div>
+                                    <div class="col-sm-1"></div>
                             </div>
-                            <div class="form-group row" style="margin-left: 12px; margin-right: 20%" >
-                                <div class="input-group mb-3">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Výber súboru</span>
-                                    </div>
-                                    <div class="custom-file">
-                                        <input type="file" class="custom-file-input" name ="files" id="fileinput" multiple required/>
-                                        <label class="custom-file-label" for="fileinput">...</label>
-                                    </div>
-                                </div>
-
-                                <div style="margin-left: 30%" class="col-sm-3">
+                                <div class="form-group row">
+                                <div class="col-sm-5"></div>
+                                <div class="col-sm-2">
                                     <div class="content">
                                         <div class="inner">
                                             <div class="submit-buttons">
@@ -146,50 +222,28 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-sm-5"></div>
+                                </div>
                             </div>
                         </form>
-                    </div>
-
-                    <div class="form-group row">
-                        <div class="col-sm-7">
-                            <button style="margin-left: 10px;" id="getALlDatas" type="button" class="form-control btn hide">Get All Files</button>
-                        </div>
-                    </div>
-
-                    <div id="getResultDiv" style="padding: 20px 10px 20px 10px">
-                        <ul style="font-size: small" class="list-group row"></ul>
-                    </div>
-
-                    <h3 style="margin: 20px;">Zobrazenie odtlačku</h3>
-                    <div class="form-group row " style="margin-left: 12px; margin-right: 20%">
-                        <div class="input-group mb-3">
-                            <select id="odtlacok" class="custom-select">
-                                <option value="first">Prvý odtlačok</option>
-                                <option value="second">Druhý odtlačok</option>
-                                <option value="third">Tretí odtlačok</option>
-                            </select>
-                            <div class="input-group-append">
-                                <button class="btn-outline-secondary" type="button" onclick="picture()" > Zobraz </button>
-                            </div>
-                        </div>
-                    </div>
 
                 </article>
 
-                <article class="col-lg-4 pravy">
-
-                        <td><img th:src="${'data:image/bmp;charset=utf-8;base64,' + fotka}" alt=""></td>
-                    <div id="fotka1" class="hide">
+                <article class="col-lg-5 pravy">
+                    <h3 >Výsledok požiadavky</h3>
+                        <td><img class="imageprop" th:src="${'data:image/bmp;charset=utf-8;base64,' + fotka}" alt=""></td>
+                    <div th:if="*{vysledok!=null and #strings.length(vysledok)>0}">
+                        <div class="backend">
+                            <p class="vysledok" th:text="${vysledok}"></p>
+                            <p class="meno" th:text="${uzivatel}"></p>
+                        </div>
                     </div>
                 </article>
             </div>
-        </div>
-
         <footer>
             Author: Ján Vladár, STU FEI
         </footer>
     </div>
-</div>
 </div>
 <script src="/static/js/animation.js"></script>
 <script src="/static/js/send.js"></script>

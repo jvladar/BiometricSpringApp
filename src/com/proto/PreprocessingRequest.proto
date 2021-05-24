@@ -1,7 +1,20 @@
 syntax = "proto3";
 import "Fingerprint.proto";
+// message specifying preprocessing params
+message PreprocessingParams{
+	// block size for orientation map
+	// and Gabor filter
+	int32 block_size = 1;
+	// lambda parameter for Gabor filter
+	// (defines average ridge width)
+	double gabor_lambda = 2;
+	// sigma parameter for Gabor filter
+	// (defines filter strength)
+	double gabor_sigma = 3;
+}
 
 // message specifying preprocessing OpenFinger request
 message PreprocessingRequest {
 	Fingerprint fingerprint = 1;
+	PreprocessingParams params = 2;
 }
