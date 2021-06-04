@@ -41,7 +41,7 @@
                                     <option value="registration">Registrácia</option>
                                     <option value="verification">Verifikácia</option>
                                     <option value="identification">Identifikácia</option>
-                                    <option value="preprocessing">Preprocesing odtlačku</option>
+                                    <option value="preprocessing">Predspracovanie odtlačku</option>
                                     <option value="showing">Zobraz odtlačok</option>
                                 </select>
                                 </div>
@@ -84,16 +84,16 @@
                             <div class="form-group row">
                                 <div class="form-group col-md-4">
                                     <label for="name"><b>Gabor Lambda</b></label>
-                                    <input class= "form-control" type="number" step="any" placeholder="Lambda"  name="lambda" id="lambda">
+                                    <input class= "form-control" type="number" value=9 step="any" placeholder="Lambda"  name="lambda" id="lambda">
                                 </div>
 
                                 <div class="form-group col-md-4">
                                     <label for="username"><b>Gabor Sigma</b></label>
-                                    <input type="number" step="any" class="form-control" placeholder="Sigma"  name="sigma" id="sigma">
+                                    <input type="number" step="any" value=3 class="form-control" placeholder="Sigma"  name="sigma" id="sigma">
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label class="" for="username"><b>Block size</b></label>
-                                    <input type="number" step="any" class="form-control" placeholder="Block"  name="block" id="block">
+                                    <input type="number" step="any" value=13 class="form-control" placeholder="Block"  name="block" id="block">
                                 </div>
                             </div>
                         </div>
@@ -109,8 +109,8 @@
                                                 <div class="submit-buttons__content">
                                                     <button class="submit-button submit-button--1" type="submit" id="scaner" title="Submit">
                                                         <span class="submit-button__pending submit-button__pending--1"></span>
-                                                        <span class="submit-button__text submit-button__text--1">Scan</span>
-                                                        <span class="submit-button__loaded submit-button__loaded--1"> <span>Scan!</span></span>
+                                                        <span class="submit-button__text submit-button__text--1">Skenovať</span>
+                                                        <span class="submit-button__loaded submit-button__loaded--1"> <span>Sken!</span></span>
                                                     </button>
                                                 </div>
                                             </div>
@@ -124,7 +124,7 @@
 
 
                         <form class="border border-danger rounded formstyle" id="uploadFiles" name="uploadFiles" method="post" th:action=@{/uploadFiles} encType="multipart/form-data">
-                            <h3>Upload odtlačkov
+                            <h3>Nahranie odtlačkov
                                 <label class="switch">
                                     <input type="checkbox" name="upload" value="ano" onclick="show();">
                                     <span class="slider round"></span>
@@ -140,7 +140,7 @@
                                         <option value="registration">Registrácia</option>
                                         <option value="verification">Verifikácia</option>
                                         <option value="identification">Identifikácia</option>
-                                        <option value="preprocessing">Preprocesing odtlačku</option>
+                                        <option value="preprocessing">Predspracovanie odtlačku</option>
                                         <option value="showing">Zobraz odtlačok</option>
                                     </select>
                                     </div>
@@ -181,16 +181,16 @@
                                     <div class="form-group row">
                                         <div class="form-group col-md-4">
                                             <label for="name"><b>Gabor Lambda</b></label>
-                                            <input class= "form-control" type="number" step="any" placeholder="Lambda"  name="lambda0" id="lambda0">
+                                            <input class= "form-control" type="number" value=9 step="any" placeholder="Lambda"  name="lambda0" id="lambda0">
                                         </div>
 
                                         <div class="form-group col-md-4">
                                             <label for="username"><b>Gabor Sigma</b></label>
-                                            <input type="number" step="any" class="form-control" placeholder="Sigma"  name="sigma0" id="sigma0">
+                                            <input type="number" step="any" value=3 class="form-control" placeholder="Sigma"  name="sigma0" id="sigma0">
                                         </div>
                                         <div class="form-group col-md-4">
                                             <label class="" for="username"><b>Block size</b></label>
-                                            <input type="number" step="any" class="form-control" placeholder="block"  name="block0" id="block0">
+                                            <input type="number" step="any" value=13 class="form-control" placeholder="block"  name="block0" id="block0">
                                         </div>
                                     </div>
                                 </div>
@@ -226,12 +226,47 @@
                                 </div>
                             </div>
                         </form>
-
+                    <div th:if="*{fotka1!=null and #strings.length(fotka1)>0}">
+                        <div id="imagepreprocess" class="form-group row border border-danger rounded formstyle">
+                            <div class="col-sm-1"></div>
+                            <label class="col-sm-2 col-form-label col-form-label-lg" for="inputGroupSelect01"><b>Požiadavka</b></label>
+                            <div class="col-sm-8">
+                                <select class="form-control form-control-lg" id="inputGroupSelect03" name="inputGroupSelect03" onchange="changeFunc1(event);">
+                                    <option value="zero" selected >Kostra odtlačku</option>
+                                    <option value="one">Po uprave kontrastu</option>
+                                    <option value="two">Smerova mapa</option>
+                                    <option value="three">Po Gáborovom filtri</option>
+                                    <option value="four">Binarizovaný obraz</option>
+                                    <option value="five">Mapa kvality</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-1"></div>
+                        </div>
+                    </div>
                 </article>
 
                 <article class="col-lg-5 pravy">
                     <h3 >Výsledok požiadavky</h3>
-                        <td><img class="imageprop" th:src="${'data:image/bmp;charset=utf-8;base64,' + fotka}" alt=""></td>
+
+                        <div id="photo0">
+                            <td><img class="imageprop" th:src="${'data:image/bmp;charset=utf-8;base64,' + fotka}" alt=""></td>
+                        </div>
+                        <div id="photo1" class="hide">
+                            <td><img class="imageprop" th:src="${'data:image/bmp;charset=utf-8;base64,' + fotka1}" alt=""></td>
+                        </div>
+                        <div id="photo2" class="hide">
+                            <td><img class="imageprop" th:src="${'data:image/bmp;charset=utf-8;base64,' + fotka2}" alt=""></td>
+                        </div>
+                        <div id="photo3" class="hide">
+                            <td><img class="imageprop" th:src="${'data:image/bmp;charset=utf-8;base64,' + fotka3}" alt=""></td>
+                        </div>
+                        <div id="photo4" class="hide">
+                            <td><img class="imageprop" th:src="${'data:image/bmp;charset=utf-8;base64,' + fotka4}" alt=""></td>
+                        </div>
+                        <div id="photo5" class="hide">
+                            <td><img class="imageprop" th:src="${'data:image/bmp;charset=utf-8;base64,' + fotka5}" alt=""></td>
+                        </div>
+
                     <div th:if="*{vysledok!=null and #strings.length(vysledok)>0}">
                         <div class="backend">
                             <p class="vysledok" th:text="${vysledok}"></p>

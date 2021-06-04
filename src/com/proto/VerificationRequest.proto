@@ -1,8 +1,9 @@
-syntax = "proto3";
-import "Fingerprint.proto";
-import "Level2Vector.proto";
+	syntax = "proto3";
+	import "Fingerprint.proto";
+	import "Level2Vector.proto";
 
-message VerificationRequest{
-	Fingerprint fingerprint = 1;
-	repeated Level2Vector level2vectors = 2;
-}
+	message VerificationRequest{
+		Fingerprint fingerprint = 1;
+		repeated Level2Vector level2vectors = 2;
+	}
+

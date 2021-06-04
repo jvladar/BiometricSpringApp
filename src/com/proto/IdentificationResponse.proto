@@ -1,6 +1,7 @@
-syntax = "proto3";
+	syntax = "proto3";
 
-message IdentificationResponse{
-	bool success = 1;
-	int32 fingerprint_id = 2;
-}
+	message IdentificationResponse{
+		bool success = 1;
+		int32 fingerprint_id = 2;
+	}
+

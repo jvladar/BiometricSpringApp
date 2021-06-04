@@ -2,6 +2,6 @@ syntax = "proto3";
 import "Level2.proto";
 
 message Level2Vector{
-	repeated Level2 level2vector = 1; 
+	repeated Level2 level2vector = 1;
 }
 

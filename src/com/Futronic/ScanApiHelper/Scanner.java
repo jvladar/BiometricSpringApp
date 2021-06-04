@@ -1,9 +1,5 @@
 package Futronic.ScanApiHelper;
 
-/**
- *
- * @author slyeung
- */
 public class Scanner {
     public native boolean OpenDevice();
     public native boolean CloseDevice();
